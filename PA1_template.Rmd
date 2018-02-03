@@ -8,11 +8,34 @@ output:
 
 ## Loading and preprocessing the data
 
+The code below downloads and reads the data. It also does some very basic processing to ensure the dates are set as date date types. We also load the dplyr library, which will be used later.
+
+```{r loaddata}
+knitr::opts_chunk$set(echo = TRUE, cache=TRUE)
+library(dplyr)
+fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+localFileName <- "activity.zip"
+download.file(fileURL, localFileName)
+unzip(zipfile = localFileName)
+activityData <- read.csv("activity.csv", nrows=3000)
+
+activityData$date <- as.Date(activityData$date)
+```
 
 
 ## What is mean total number of steps taken per day?
 
+```{r totalmeanstepsperday}
+dailySummary <- activityData %>%
+    group_by(date) %>%
+    summarise(dailyTotalSteps=sum(steps))
 
+
+# FIX clean up labels
+hist(dailySummary$dailyTotalSteps, breaks = 10)
+
+meanStepsPerDay <- mean(dailySummary$dailyTotalSteps, na.rm = TRUE)
+```
 
 ## What is the average daily activity pattern?
 
